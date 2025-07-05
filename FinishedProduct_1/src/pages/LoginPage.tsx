@@ -18,25 +18,45 @@ const LoginPage: React.FC = () => {
   const from = location.state?.from?.pathname || '/';
 
   const handleGoogleSignIn = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      const {  error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}${from}`
-        }
-      });
+  setLoading(true);
+  setError('');
+  try {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin  
+      }
+    });
+
+    if (error) throw error;
+
+    // Supabase will handle redirection after Google login
+  } catch (error: any) {
+    setError(error.message || 'Failed to sign in with Google. Please try again.');
+  } finally {
+    setLoading(false);
+  }
+};
+  // const handleGoogleSignIn = async () => {
+  //   setLoading(true);
+  //   setError('');
+  //   try {
+  //     const {  error } = await supabase.auth.signInWithOAuth({
+  //       provider: 'google',
+  //       options: {
+  //         redirectTo: `${window.location.origin}${from}`
+  //       }
+  //     });
       
-      if (error) throw error;
+  //     if (error) throw error;
       
-      // The redirect will handle navigation
-    } catch (error: any) {
-      setError(error.message || 'Failed to sign in with Google. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     // The redirect will handle navigation
+  //   } catch (error: any) {
+  //     setError(error.message || 'Failed to sign in with Google. Please try again.');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
